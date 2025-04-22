@@ -27,7 +27,6 @@ public class CustomerManagementMockImpl implements CustomerManagementService {
 	@Override
 	public void updateCustomer(Customer changedCustomer) {
 		customerMap.put(changedCustomer.getCustomerId(), changedCustomer);
-
 	}
 
 	@Override
@@ -43,19 +42,23 @@ public class CustomerManagementMockImpl implements CustomerManagementService {
 
 	@Override
 	public List<Customer> findCustomersByName(String name) {
-		List<Customer> customerList = customerMap.values().stream().toList();
+		// Ready an empty list for matching customers
+		List<Customer> result = new ArrayList<>();
 
-		for (Customer customer : customerList) {
-			if (!customer.getCompanyName().equals(name)) {
-				customerList.remove(customer);
+		// Loop through all customers
+		for (Customer customer : customerMap.values()) {
+			// .toLowerCase ensures case-insensitive matching
+			if (customer.getCompanyName().toLowerCase().contains(name.toLowerCase())) {
+				result.add(customer);
 			}
 		}
-		return customerList;
+
+		return result;
 	}
 
 	@Override
 	public List<Customer> getAllCustomers() {
-		return customerMap.values().stream().toList();;
+		return customerMap.values().stream().toList();
 	}
 
 	@Override
