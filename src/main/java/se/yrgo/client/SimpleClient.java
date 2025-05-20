@@ -21,11 +21,15 @@ public class SimpleClient {
     public static void main(String[] args) {
         ClassPathXmlApplicationContext container = new ClassPathXmlApplicationContext("application.xml");
 
+
+
         CustomerManagementService customerService = container.getBean(CustomerManagementService.class);
         CallHandlingService callService = container.getBean(CallHandlingService.class);
         DiaryManagementService diaryService = container.getBean(DiaryManagementService.class);
 
         customerService.newCustomer(new Customer("CS03939", "Acme", "Good Customer"));
+
+
 
         Call newCall = new Call("Larry Wall called from Acme Corp");
         Action action1 = new Action("Call back Larry to ask how things are going", new GregorianCalendar(2016, 0, 0), "rac");
@@ -46,6 +50,8 @@ public class SimpleClient {
         for (Action next: incompleteActions){
             System.out.println(next);
         }
+
+        List<Customer> customers = customerService.getAllCustomers();
 
         container.close();
     }

@@ -1,9 +1,15 @@
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"  
-            "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
 
-<beans>
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<!-- add your bean definitions here! -->
+
 
 	<!-- Connection Pool for Production -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
@@ -24,7 +30,8 @@
 	</bean>
 
 	<bean id="customerManagementService"
-		  class="se.yrgo.services.customers.CustomerManagementMockImpl">
+		  class="se.yrgo.services.customers.CustomerManagementServiceProductionImpl">
+        <constructor-arg ref="customerDao" />
 	</bean>
 
 	<bean id="diaryManagementService"
@@ -37,4 +44,16 @@
 			<constructor-arg ref="customerManagementService"/>
 			<constructor-arg ref="diaryManagementService"/>
 	</bean>
+
+	<!-- Timing advice -->
+	<bean id="performanceTimingAdvice"
+		  class="se.yrgo.advice.PerformanceTimingAdvice"/>
+
+	<aop:config>
+		<aop:aspect ref = "performanceTimingAdvice">
+			<aop:around method="performTimingMeasurement"
+						pointcut = "execution (* se.yrgo.services..*.* (..) ) || execution (* se.yrgo.dataaccess..*.* (..) )" />
+
+		</aop:aspect>
+	</aop:config>
 </beans>
